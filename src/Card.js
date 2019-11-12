@@ -1,5 +1,5 @@
 import React from "react";
-import Bar from "../Bar/Bar";
+import Bar from "./Bar";
 
 const card = props => {
   let hp = 0,
@@ -31,9 +31,9 @@ const card = props => {
 
   happy = Number((hp / 10 + damage / 10 + 10 - weak / 10) / 5).toFixed(0);
 
-  const cute = [...Array(parseInt(happy))]
+  const cute = [...Array(parseInt(happy, 10))]
     .slice()
-    .map((e, i) => <img src={require("../cute.png")} key={i} alt="cute" />);
+    .map((e, i) => <img src={require("./cute.png")} key={i} alt="cute" />);
 
   return (
     <div className={props.cardType}>

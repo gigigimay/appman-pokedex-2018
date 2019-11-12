@@ -1,8 +1,7 @@
 import React, { Component } from "react";
 import axios from "axios";
 import "./App.css";
-
-import Card from "./Card/Card";
+import Card from "./Card";
 
 // const COLORS = {
 //   Psychic: "#f8a5c2",
@@ -68,7 +67,6 @@ class App extends Component {
   componentDidMount() {
     axios.get("http://localhost:3030/api/cards?limit=30").then(response => {
       this.setState({ pokemons: response.data.cards });
-      console.log(this.state.pokemons);
     });
   }
 
