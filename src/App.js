@@ -22,7 +22,7 @@ class App extends Component {
     modalOpen: false,
     myPokemons: [
       {
-        id: "jaaaa",
+        id: "eiei",
         name: "Cubone",
         hp: 110,
         attacks: [
