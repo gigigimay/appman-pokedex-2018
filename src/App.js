@@ -1,21 +1,7 @@
-import React, { Component } from "react";
-import axios from "axios";
-import "./App.css";
-import Card from "./Card";
-
-// const COLORS = {
-//   Psychic: "#f8a5c2",
-//   Fighting: "#f0932b",
-//   Fairy: "#c44569",
-//   Normal: "#f6e58d",
-//   Grass: "#badc58",
-//   Metal: "#95afc0",
-//   Water: "#3dc1d3",
-//   Lightning: "#f9ca24",
-//   Darkness: "#574b90",
-//   Colorless: "#FFF",
-//   Fire: "#eb4d4b"
-// };
+import React, { Component } from 'react'
+import axios from 'axios'
+import './App.css'
+import Card from './Card'
 
 const api = axios.create({
   baseURL: 'http://localhost:3030/api'
@@ -39,33 +25,33 @@ class App extends Component {
     modalOpen: false,
     myPokemons: [],
     pokemons: [],
-  };
+  }
 
   toggleModal = () => {
     this.setState(prevState => {
-      return { modalOpen: !prevState.modalOpen };
-    });
-  };
+      return { modalOpen: !prevState.modalOpen }
+    })
+  }
 
   searchHandler = async event => {
     const txt = event.target.value
     const { data } = await api.get('/cards', { params: { type: txt, name: txt } })
-    this.setState({ pokemons: data.cards });
-  };
+    this.setState({ pokemons: data.cards })
+  }
 
   deletePokemonHandler = poke => {
-    const myNewPokemons = this.state.myPokemons.filter(myPoke => myPoke.id !== poke.id);
-    this.setState({ myPokemons: myNewPokemons });
-  };
+    const myNewPokemons = this.state.myPokemons.filter(myPoke => myPoke.id !== poke.id)
+    this.setState({ myPokemons: myNewPokemons })
+  }
 
   addPokemonHandler = poke => {
-    const myNewPokemons = [...this.state.myPokemons, poke];
-    this.setState({ myPokemons: myNewPokemons });
-  };
+    const myNewPokemons = [...this.state.myPokemons, poke]
+    this.setState({ myPokemons: myNewPokemons })
+  }
 
   async componentDidMount() {
     const { data } = await api.get('/cards')
-    this.setState({ pokemons: data.cards });
+    this.setState({ pokemons: data.cards })
   }
 
   renderDexPokemons = () => this.state.pokemons
@@ -99,7 +85,7 @@ class App extends Component {
           <div className="dexPokes">{this.renderDexPokemons()}</div>
         </div>
       </div>
-    );
+    )
 
     return (
       <div className="App">
@@ -110,8 +96,8 @@ class App extends Component {
           <button onClick={this.toggleModal}>+</button>
         </div>
       </div>
-    );
+    )
   }
 }
 
-export default App;
+export default App
