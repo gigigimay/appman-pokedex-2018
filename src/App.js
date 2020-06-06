@@ -39,7 +39,6 @@ class App extends Component {
     modalOpen: false,
     myPokemons: [],
     pokemons: [],
-    searchText: ''
   };
 
   toggleModal = () => {
@@ -48,15 +47,10 @@ class App extends Component {
     });
   };
 
-  searchHandler = txt => {
-    this.setState({ searchText: txt });
-    api
-      .get(txt 
-        ? "/cards?limit=30&name=" + txt
-        : "/cards?limit=30")
-      .then(response => {
-        this.setState({ pokemons: response.data.cards });
-      });
+  searchHandler = async event => {
+    const txt = event.target.value
+    const { data } = await api.get('/cards', { params: { type: txt, name: txt } })
+    this.setState({ pokemons: data.cards });
   };
 
   deletePokemonHandler = poke => {
@@ -69,10 +63,9 @@ class App extends Component {
     this.setState({ myPokemons: myNewPokemons });
   };
 
-  componentDidMount() {
-    api.get("/cards?limit=30").then(response => {
-      this.setState({ pokemons: response.data.cards });
-    });
+  async componentDidMount() {
+    const { data } = await api.get('/cards')
+    this.setState({ pokemons: data.cards });
   }
 
   renderDexPokemons = () => this.state.pokemons
@@ -99,10 +92,7 @@ class App extends Component {
             <input
               placeholder="Find Pokemon"
               type="text"
-              value={this.state.searchText}
-              onChange={event => {
-                this.searchHandler(event.target.value);
-              }}
+              onChange={this.searchHandler}
             />
             <img src={require('./search.png')} />
           </div>

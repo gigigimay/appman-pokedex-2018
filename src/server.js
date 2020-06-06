@@ -16,11 +16,9 @@ app.get('/api/cards', (req, res) => {
 
   res.json({
     cards: _.filter(cards, card => {
-      const name = _.toUpper(_.get(req, 'query.name', ''))
-      const type = _.toUpper(_.get(req, 'query.type', ''))
-      const checkName = _.includes(_.toUpper(card.name), name)
-      const checkType = _.includes(_.toUpper(card.type), type)
-      return checkName && checkType
+      const checkName = _.includes(_.toUpper(card.name), _.toUpper(name))
+      const checkType = _.includes(_.toUpper(card.type), _.toUpper(type))
+      return checkName || checkType
     })
   })
 
