@@ -17,27 +17,28 @@ import Card from "./Card";
 //   Fire: "#eb4d4b"
 // };
 
+const mapPokemons = props => poke => (
+  <Card
+    key={poke.id}
+    data={poke}
+    name={poke.name}
+    hp={poke.hp}
+    atks={poke.attacks}
+    weak={poke.weaknesses}
+    pic={poke.imageUrl}
+    {...props}
+  />
+)
+
 class App extends Component {
   state = {
     modalOpen: false,
-    myPokemons: [
-      {
-        id: "eiei",
-        name: "Cubone",
-        hp: 110,
-        attacks: [
-          { name: "attack A", damage: "20+" },
-          { name: "attack B", damage: "40x" }
-        ],
-        weaknesses: [{ name: "weakness A" }],
-        imageUrl: "https://images.pokemontcg.io/xy0/18.png"
-      }
-    ],
+    myPokemons: [],
     pokemons: [],
-    searchText: ""
+    searchText: ''
   };
 
-  toggleListHandler = () => {
+  toggleModal = () => {
     this.setState(prevState => {
       return { modalOpen: !prevState.modalOpen };
     });
@@ -52,15 +53,13 @@ class App extends Component {
       });
   };
 
-  deletePokemonHandler = index => {
-    const myPokemons = [...this.state.myPokemons];
-    myPokemons.splice(index, 1);
-    this.setState({ myPokemons: myPokemons });
+  deletePokemonHandler = poke => {
+    const myNewPokemons = this.state.myPokemons.filter(myPoke => myPoke.id !== poke.id);
+    this.setState({ myPokemons: myNewPokemons });
   };
 
   addPokemonHandler = poke => {
-    const myNewPokemons = [...this.state.myPokemons];
-    myNewPokemons.push(poke);
+    const myNewPokemons = [...this.state.myPokemons, poke];
     this.setState({ myPokemons: myNewPokemons });
   };
 
@@ -70,53 +69,25 @@ class App extends Component {
     });
   }
 
+  renderDexPokemons = () => this.state.pokemons
+    .filter(poke => this.state.myPokemons.every(myPoke => myPoke.id !== poke.id))
+    .map(mapPokemons({
+      cardType: 'dexPoke',
+      btnTxt: 'Add',
+      onClick: this.addPokemonHandler,
+    }))
+
+  renderMyPokemons = () => this.state.myPokemons
+    .map(mapPokemons({
+      cardType: 'myPoke',
+      btnTxt: 'X',
+      onClick: this.deletePokemonHandler,
+    }))
+
   render() {
-    const dex = this.state.pokemons
-      .filter(poke => {
-        let result = true;
-        for (let i = 0; i < this.state.myPokemons.length; i++) {
-          if (this.state.myPokemons[i].name === poke.name) {
-            result = false;
-            break;
-          }
-        }
-        return result;
-      })
-      .map((poke, index) => {
-        return (
-          <Card
-            cardType="dexPoke"
-            key={poke.id}
-            name={poke.name}
-            hp={poke.hp}
-            atks={poke.attacks}
-            weak={poke.weaknesses}
-            pic={poke.imageUrl}
-            btnTxt="Add"
-            clicked={() => this.addPokemonHandler(poke)}
-          />
-        );
-      });
-
-    const myPoke = this.state.myPokemons.map((poke, index) => {
-      return (
-        <Card
-          cardType="myPoke"
-          key={poke.id}
-          name={poke.name}
-          hp={poke.hp}
-          atks={poke.attacks}
-          weak={poke.weaknesses}
-          pic={poke.imageUrl}
-          btnTxt="X"
-          clicked={() => this.deletePokemonHandler(index)}
-        />
-      );
-    });
-
-    const modal = this.state.modalOpen ? (
+    const modal = (
       <div>
-        <div className="backdrop" onClick={this.toggleListHandler} />
+        <div className="backdrop" onClick={this.toggleModal} />
         <div className="modal">
           <input
             placeholder="Find Pokemon"
@@ -126,20 +97,18 @@ class App extends Component {
               this.searchHandler(event.target.value);
             }}
           />
-          <div className="dexPokes">{dex}</div>
+          <div className="dexPokes">{this.renderDexPokemons()}</div>
         </div>
       </div>
-    ) : null;
+    );
 
     return (
       <div className="App">
-        {modal}
-        <div className="header">
-          <h1>My Pokedex</h1>
-        </div>
-        <div className="content">{myPoke}</div>
+        {this.state.modalOpen && modal}
+        <div className="header">My Pokedex</div>
+        <div className="content">{this.renderMyPokemons()}</div>
         <div className="footer">
-          <button onClick={this.toggleListHandler}>+</button>
+          <button onClick={this.toggleModal}>+</button>
         </div>
       </div>
     );
