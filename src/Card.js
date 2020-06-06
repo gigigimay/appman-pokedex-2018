@@ -12,7 +12,7 @@ const calculateStatus = (pokemon) => {
   const str = Math.min(attacks.length * 50, 100)
   const weak = Math.min(weaknesses.length * 50, 100)
   const damage = Math.min(attacks.reduce((total, atk) => getNumber(atk.damage) + total, 0), 100)
-  const happy = Math.floor((hp + damage + 1 - weak) / 50);
+  const happy = Math.max(Math.floor((hp + damage + 1 - weak) / 50), 0);
   return { hp, str, weak, happy }
 }
 

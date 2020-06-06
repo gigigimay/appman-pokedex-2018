@@ -17,6 +17,10 @@ import Card from "./Card";
 //   Fire: "#eb4d4b"
 // };
 
+const api = axios.create({
+  baseURL: 'http://localhost:3030/api'
+})
+
 const mapPokemons = props => poke => (
   <Card
     key={poke.id}
@@ -46,8 +50,10 @@ class App extends Component {
 
   searchHandler = txt => {
     this.setState({ searchText: txt });
-    axios
-      .get("http://localhost:3030/api/cards?limit=30&name=" + txt)
+    api
+      .get(txt 
+        ? "/cards?limit=30&name=" + txt
+        : "/cards?limit=30")
       .then(response => {
         this.setState({ pokemons: response.data.cards });
       });
@@ -64,7 +70,7 @@ class App extends Component {
   };
 
   componentDidMount() {
-    axios.get("http://localhost:3030/api/cards?limit=30").then(response => {
+    api.get("/cards?limit=30").then(response => {
       this.setState({ pokemons: response.data.cards });
     });
   }
@@ -89,14 +95,17 @@ class App extends Component {
       <div>
         <div className="backdrop" onClick={this.toggleModal} />
         <div className="modal">
-          <input
-            placeholder="Find Pokemon"
-            type="text"
-            value={this.state.searchText}
-            onChange={event => {
-              this.searchHandler(event.target.value);
-            }}
-          />
+          <div className="inputWrapper">
+            <input
+              placeholder="Find Pokemon"
+              type="text"
+              value={this.state.searchText}
+              onChange={event => {
+                this.searchHandler(event.target.value);
+              }}
+            />
+            <img src={require('./search.png')} />
+          </div>
           <div className="dexPokes">{this.renderDexPokemons()}</div>
         </div>
       </div>
